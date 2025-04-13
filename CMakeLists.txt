@@ -8,6 +8,8 @@ find_package(SFML 3.0.0 COMPONENTS System Window Graphics REQUIRED)
 
 add_executable(tetris src/main.cpp)
 
+target_sources(tetris PRIVATE src/game.cpp)
+
 target_include_directories(tetris PRIVATE inc)
 
 target_link_libraries(tetris PRIVATE sfml-system sfml-window sfml-graphics)

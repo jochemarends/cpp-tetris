@@ -1,11 +1,13 @@
-#ifndef SNAKE_GRID_H
-#define SNAKE_GRID_H
+#ifndef TETRIS_GRID_H
+#define TETRIS_GRID_H
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <ranges>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
+#include <color.h>
 
 namespace tetris {
 
@@ -21,10 +23,24 @@ struct grid : sf::Drawable {
     [[nodiscard]] sf::Vector2f top_left() const;
 
     /**
-    * Obtain the grid's tile size.
+    * Obtain the grid's tile size in pixels.
     */
     [[nodiscard]] std::size_t tile_size() const;
 
+    /**
+     * Obtain grid's size in pixels.
+     */
+    [[nodiscard]] sf::Vector2<std::size_t> size() const;
+
+    /**
+     * Clear the grid.
+     */
+    void clear();
+
+    /**
+     * Set all tiles to one color.
+     */
+    void fill(color c);
 
     /**
     * Access a grid's tile.
@@ -39,7 +55,7 @@ struct grid : sf::Drawable {
     */
     [[nodiscard]] auto indices() const;
 private:
-    std::array<sf::Color, Rows * Columns> tiles_{};
+    std::array<color, Rows * Columns> tiles_{};
     sf::Vector2f top_left_{};
     std::size_t tile_size_{};
 };
@@ -61,7 +77,7 @@ void grid<Rows, Columns>::draw(sf::RenderTarget& target, sf::RenderStates states
         pos.y += static_cast<float>(row * tile_size_);
         pos.x += static_cast<float>(column * tile_size_);
 
-        sf::Color color{operator[](row, column)};
+        sf::Color color{to_rgba(operator[](row, column))};
         tile.setPosition({pos.x, pos.y});
         tile.setFillColor(color);
         target.draw(tile, states);
@@ -76,6 +92,21 @@ sf::Vector2f grid<Rows, Columns>::top_left() const {
 template<std::size_t Rows, std::size_t Columns>
 std::size_t grid<Rows, Columns>::tile_size() const {
     return tile_size_;
+}
+
+template<std::size_t Rows, std::size_t Columns>
+sf::Vector2<std::size_t> grid<Rows, Columns>::size() const {
+    return sf::Vector2<std::size_t>{tile_size_ * Rows, tile_size_ * Columns};
+}
+
+template<std::size_t Rows, std::size_t Columns>
+void grid<Rows, Columns>::clear() {
+    fill(color::transparent);
+}
+
+template<std::size_t Rows, std::size_t Columns>
+void grid<Rows, Columns>::fill(color c) {
+    std::ranges::fill(tiles_, c);
 }
 
 template<std::size_t Rows, std::size_t Columns>

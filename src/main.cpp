@@ -1,3 +1,5 @@
+#include "color.h"
+#include "tetromino.h"
 #include <print>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -18,7 +20,16 @@ int main() {
     constexpr sf::Vector2f top_left{0.0f, 0.0f};
     constexpr std::size_t tile_size{40uz};
 
-    snake::grid<20, 10> grid{top_left, tile_size};
+    tetris::grid<20, 10> grid{top_left, tile_size};
+
+    tetris::game game{};
+    const auto tetromino{tetris::tetromino::i};
+    const sf::Vector2i pivot{5, 5};
+
+    for (auto offset : tetris::shape(tetromino)) {
+        auto [column, row] = pivot + offset;
+        grid[column, row] = tetris::color::red;
+    }
 
     while (window.isOpen()) {
         while (std::optional<sf::Event> event = window.pollEvent()) {
@@ -30,11 +41,12 @@ int main() {
         window.clear(sf::Color::Black);
 
         if (clock.getElapsedTime().asSeconds() > (1.0f / tick_rate)) {
+            game.tick();
             clock.restart();
         }
 
-        grid[0, 0] = sf::Color::Blue;
-        grid[0, 1] = sf::Color::Green;
+        grid[0, 0] = tetris::color::green;
+        grid[0, 1] = tetris::color::red;
         window.draw(grid);
         window.display();
     }
