@@ -1,5 +1,6 @@
-#include "color.h"
-#include "tetromino.h"
+#include <color.h>
+#include <level.h>
+#include <tetromino.h>
 #include <print>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -20,16 +21,16 @@ int main() {
     constexpr sf::Vector2f top_left{0.0f, 0.0f};
     constexpr std::size_t tile_size{40uz};
 
-    tetris::grid<20, 10> grid{top_left, tile_size};
+    tetris::level level{top_left, tile_size};
 
-    tetris::game game{};
-    const auto tetromino{tetris::tetromino::i};
-    const sf::Vector2i pivot{5, 5};
+    // const auto tetromino{tetris::tetromino::i};
+    // const sf::Vector2i pivot{5, 5};
 
-    for (auto offset : tetris::shape(tetromino)) {
-        auto [column, row] = pivot + offset;
-        grid[column, row] = tetris::color::red;
-    }
+    // for (auto offset : tetris::shape(tetromino)) {
+    //     auto [column, row] = pivot + offset;
+    //     grid[column, row] = tetris::color::red;
+    // }
+    level.spawn(tetris::tetromino::i, tetris::color::green);
 
     while (window.isOpen()) {
         while (std::optional<sf::Event> event = window.pollEvent()) {
@@ -41,13 +42,13 @@ int main() {
         window.clear(sf::Color::Black);
 
         if (clock.getElapsedTime().asSeconds() > (1.0f / tick_rate)) {
-            game.tick();
+            level.tick();
             clock.restart();
         }
 
-        grid[0, 0] = tetris::color::green;
-        grid[0, 1] = tetris::color::red;
-        window.draw(grid);
+        // grid[0, 0] = tetris::color::green;
+        // grid[0, 1] = tetris::color::red;
+        window.draw(level);
         window.display();
     }
 }

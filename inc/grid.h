@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <color.h>
+#include <piece.h>
 
 namespace tetris {
 
@@ -15,7 +16,7 @@ template<std::size_t Rows, std::size_t Columns>
 struct grid : sf::Drawable {
     grid(sf::Vector2f top_left, std::size_t tile_size);
 
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
     /**
     * Obtain the position of the grid's top left corner.
@@ -43,6 +44,13 @@ struct grid : sf::Drawable {
     void fill(color c);
 
     /**
+     * Write a tetromino piece to the grid.
+     *
+     * @return Number of tiles that were written to.
+     */
+    int write(const piece& p);
+
+    /**
     * Access a grid's tile.
     *
     * @return Reference to color of the tile.
@@ -62,7 +70,7 @@ private:
 
 template<std::size_t Rows, std::size_t Columns>
 grid<Rows, Columns>::grid(sf::Vector2f top_left, std::size_t tile_size) 
-    : top_left_{top_left}, tile_size_{tile_size} {}
+    :top_left_{top_left}, tile_size_{tile_size} {}
 
 template<std::size_t Rows, std::size_t Columns>
 void grid<Rows, Columns>::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -107,6 +115,19 @@ void grid<Rows, Columns>::clear() {
 template<std::size_t Rows, std::size_t Columns>
 void grid<Rows, Columns>::fill(color c) {
     std::ranges::fill(tiles_, c);
+}
+
+template<std::size_t Rows, std::size_t Columns>
+int grid<Rows, Columns>::write(const piece& p) {
+    auto indices = tetris::indices(p.shape)
+        | transform::rotate{.turns = p.turns}
+        | transform::move{.offset = p.pos};
+
+    for (auto [row, column] : indices) {
+        operator[](row, column) = p.color;
+    }
+
+    return 1;
 }
 
 template<std::size_t Rows, std::size_t Columns>
