@@ -23,15 +23,6 @@ int main() {
 
     tetris::level level{top_left, tile_size};
 
-    // const auto tetromino{tetris::tetromino::i};
-    // const sf::Vector2i pivot{5, 5};
-
-    // for (auto offset : tetris::shape(tetromino)) {
-    //     auto [column, row] = pivot + offset;
-    //     grid[column, row] = tetris::color::red;
-    // }
-    level.spawn(tetris::tetromino::i, tetris::color::green);
-
     while (window.isOpen()) {
         while (std::optional<sf::Event> event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
@@ -46,8 +37,6 @@ int main() {
             clock.restart();
         }
 
-        // grid[0, 0] = tetris::color::green;
-        // grid[0, 1] = tetris::color::red;
         window.draw(level);
         window.display();
     }

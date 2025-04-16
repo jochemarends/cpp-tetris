@@ -9,6 +9,7 @@
 #include <SFML/System.hpp>
 #include <color.h>
 #include <piece.h>
+#include <utility>
 
 namespace tetris {
 
@@ -32,6 +33,11 @@ struct grid : sf::Drawable {
      * Obtain grid's size in pixels.
      */
     [[nodiscard]] sf::Vector2<std::size_t> size() const;
+
+    /**
+     * Check whether grid contains index.
+     */
+    [[nodiscard]] bool contains(sf::Vector2i index) const;
 
     /**
      * Clear the grid.
@@ -105,6 +111,12 @@ std::size_t grid<Rows, Columns>::tile_size() const {
 template<std::size_t Rows, std::size_t Columns>
 sf::Vector2<std::size_t> grid<Rows, Columns>::size() const {
     return sf::Vector2<std::size_t>{tile_size_ * Rows, tile_size_ * Columns};
+}
+
+template<std::size_t Rows, std::size_t Columns>
+bool grid<Rows, Columns>::contains(sf::Vector2i index) const {
+    return index.x >= 0 && std::cmp_less(index.x, Rows)
+        && index.y >= 0 && std::cmp_less(index.y, Columns);
 }
 
 template<std::size_t Rows, std::size_t Columns>

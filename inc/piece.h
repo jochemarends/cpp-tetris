@@ -8,11 +8,19 @@
 namespace tetris {
 
 struct piece {
+    auto indices() const;
+
     tetromino shape{};
     tetris::color color{};
     sf::Vector2i pos{};
     int turns{};
 };
+
+inline auto piece::indices() const {
+    return tetris::indices(shape)
+        | transform::rotate{.turns = turns}
+        | transform::move{.offset = pos};
+}
 
 }
 

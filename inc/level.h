@@ -24,7 +24,12 @@ struct level : sf::Drawable {
 
     void spawn(tetromino t, color c);
 
+    bool move_left();
+    bool move_right();
+    bool move_down();
+
     bool turn_cw();
+    bool turn_ccw();
 
     static constexpr std::size_t rows{20uz};
     static constexpr std::size_t columns{10uz};
