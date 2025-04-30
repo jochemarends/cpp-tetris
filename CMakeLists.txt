@@ -4,7 +4,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(tetris LANGUAGES CXX)
 
-find_package(SFML 3.0.0 COMPONENTS System Window Graphics REQUIRED)
+include(FetchContent)
+
+FetchContent_Declare(
+    sfml
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 3.0.0
+)
+
+FetchContent_MakeAvailable(sfml)
 
 add_executable(tetris src/main.cpp)
 
